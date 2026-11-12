@@ -1,7 +1,21 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
 }
+
+val localConfig = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val demoConfig = Properties().apply {
+    val file = rootProject.file("weather-demo.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val weatherToken = localConfig.getProperty("CAIYUN_API_TOKEN")
+    ?.takeIf { it.isNotBlank() }
+    ?: demoConfig.getProperty("CAIYUN_API_TOKEN", "")
 
 android {
     namespace = "com.pyn.sunnyweather"
@@ -17,6 +31,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "CAIYUN_API_TOKEN", "\"${weatherToken.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
     }
 
     buildTypes {
@@ -27,15 +42,23 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += "release"
+            isDebuggable = false
+        }
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -44,6 +67,17 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.okhttp)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.coroutines.android)
+    implementation(libs.datastore)
+    implementation(libs.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.compose.icons)
+    coreLibraryDesugaring(libs.desugar)
+    testImplementation(libs.coroutines.test)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

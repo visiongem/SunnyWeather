@@ -9,3 +9,11 @@
 .cxx
 local.properties
 .kotlin/
+
+# Local project notes and development assistant files
+/docs/
+/PRODUCT.md
+/DESIGN.md
+/AGENTS.md
+/.agents/
+/.impeccable/

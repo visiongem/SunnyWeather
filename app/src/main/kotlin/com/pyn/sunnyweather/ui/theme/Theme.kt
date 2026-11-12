@@ -1,65 +1,27 @@
-/*
- * Copyright 2026 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.pyn.sunnyweather.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme = darkColorScheme(
-    primary = primaryDark,
-    primaryContainer = primaryContainerDark,
-    secondary = secondaryDark,
-    tertiary = tertiaryDark
+private val Light = lightColorScheme(
+    primary = Color(0xFF185BC4), onPrimary = Color.White,
+    background = Color(0xFFF4F8FC), onBackground = Color(0xFF172F49),
+    surface = Color.White, onSurface = Color(0xFF172F49),
+    surfaceVariant = Color(0xFFE9F0F7), onSurfaceVariant = Color(0xFF52677C),
+    outline = Color(0xFF6E8399), outlineVariant = Color(0xFFDCE5EF),
+    errorContainer = Color(0xFFFDECEF), onErrorContainer = Color(0xFFA52332),
 )
-
-private val LightColorScheme = lightColorScheme(
-    primary = primaryLight,
-    primaryContainer = primaryContainerLight,
-    secondary = secondaryLight,
-    tertiary = tertiaryLight
+private val Dark = darkColorScheme(
+    primary = Color(0xFF9CC7FF), onPrimary = Color(0xFF102440),
+    background = Color(0xFF101322), onBackground = Color(0xFFE8F2FC),
+    surface = Color(0xFF202538), onSurface = Color(0xFFE8F2FC),
+    surfaceVariant = Color(0xFF292F46), onSurfaceVariant = Color(0xFFA6BACF),
+    outline = Color(0xFF8AA4BE), outlineVariant = Color(0xFF31475D),
+    errorContainer = Color(0xFF44232B), onErrorContainer = Color(0xFFFFB3BB),
 )
-
 @Composable
-fun SunnyWeatherTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+fun SunnyWeatherTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    MaterialTheme(colorScheme = if (darkTheme) Dark else Light, typography = Typography, content = content)
 }
-
